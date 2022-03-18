@@ -1,10 +1,15 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Login from './components/Login';
 
 const App = () => {
   return (
-    <>
-      <h1>React App</h1>
-    </>
+    <Router>
+      <Routes>
+        <Route path='' element={<Login />} />
+      </Routes>
+    </Router>
   );
 };
 
