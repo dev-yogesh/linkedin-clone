@@ -20,12 +20,62 @@ const Header = () => {
         </Search>
         <Nav>
           <NavListWrap>
-            <NavList>
+            <NavList className='active'>
               <a>
                 <img src='/images/nav-home.svg' alt='home' />
                 <span>Home</span>
               </a>
             </NavList>
+
+            <NavList>
+              <a>
+                <img src='/images/nav-network.svg' alt='home' />
+                <span>My Network</span>
+              </a>
+            </NavList>
+
+            <NavList>
+              <a>
+                <img src='/images/nav-jobs.svg' alt='home' />
+                <span>Jobs</span>
+              </a>
+            </NavList>
+
+            <NavList>
+              <a>
+                <img src='/images/nav-notifications.svg' alt='home' />
+                <span>Messaging</span>
+              </a>
+            </NavList>
+
+            <NavList>
+              <a>
+                <img src='/images/nav-home.svg' alt='home' />
+                <span>Notifications</span>
+              </a>
+            </NavList>
+
+            <User>
+              <a>
+                <img src='/images/user.svg' alt='user' />
+                <span>Me</span>
+                <img src='/images/down-icon.svg' alt='down' />
+              </a>
+
+              <SignOut>
+                <a>Sign Out</a>
+              </SignOut>
+            </User>
+
+            <Work>
+              <a>
+                <img src='/images/nav-work.svg' alt='work' />
+                <span>
+                  Work
+                  <img src='/images/down-icon.svg' alt='down' />
+                </span>
+              </a>
+            </Work>
           </NavListWrap>
         </Nav>
       </Content>
@@ -112,6 +162,20 @@ const NavListWrap = styled.ul`
   display: flex;
   flex-wrap: nowrap;
   list-style-type: none;
+
+  .active {
+    span:after {
+      content: '';
+      transform: scaleX(1);
+      border-bottom: 2px solid var(--white, #fff);
+      bottom: 0;
+      left: 0;
+      position: absolute;
+      transition: transform 0.2s ease-in-out;
+      width: 100%;
+      border-color: rgba(0, 0, 0, 0.9);
+    }
+  }
 `;
 
 const NavList = styled.li`
@@ -153,4 +217,46 @@ const NavList = styled.li`
   }
 `;
 
+const SignOut = styled.div`
+  position: absolute;
+  top: 45px;
+  background: white;
+  border-radius: 0 0 5px 5px;
+  width: 100px;
+  height: 40px;
+  font-size: 16px;
+  transition-duration: 167ms;
+  text-align: center;
+  display: none;
+`;
+
+const User = styled(NavList)`
+  a > svg {
+    width: 24px;
+    border-radius: 50%;
+  }
+
+  a > img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  &:hover {
+    ${SignOut} {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+  }
+`;
+
+const Work = styled(User)`
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+`;
 export default Header;
