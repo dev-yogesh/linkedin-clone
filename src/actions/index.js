@@ -1,4 +1,4 @@
-import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth';
 
 import { auth, provider } from '../firebase';
 import { SET_USER, SET_LOADING_STATUS, GET_ARTICLES } from './actionType';
@@ -27,5 +27,17 @@ export function getUserAuth() {
         dispatch(setUser(user));
       }
     });
+  };
+}
+
+export function signOutAPI() {
+  return (dispatch) => {
+    signOut(auth)
+      .then(() => {
+        dispatch(setUser(null));
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 }
