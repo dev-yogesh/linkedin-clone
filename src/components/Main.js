@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-
+import ReactPlayer from 'react-player';
 import PostModal from './PostModal';
+import { getArticlesAPI } from '../actions';
 
 const Main = (props) => {
   const [showModal, setShowModal] = useState('close');
+
+  useEffect(() => {
+    props.getArticles();
+  }, []);
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -30,15 +35,17 @@ const Main = (props) => {
   return (
     <Container>
       <ShareBox>
-        Share
         <div>
           {props.user && props.user.photoURL ? (
             <img src={props.user.photoURL} alt='user' />
           ) : (
-            <img src='/images/user.svg' alt='' />
+            <img src='/images/user.svg' alt='user' />
           )}
-          <button onClick={handleClick}>Start a post</button>
+          <button disabled={props.loading ? true : false} onClick={handleClick}>
+            Start a post
+          </button>
         </div>
+
         <div>
           <button>
             <img src='/images/photo-icon.svg' alt='phone' />
@@ -62,59 +69,70 @@ const Main = (props) => {
         </div>
       </ShareBox>
 
-      <div>
-        <Article>
-          <SharedActor>
-            <a>
-              <img src='/images/user.svg' alt='user' />
-              <div>
-                <span>Title</span>
-                <span>Info</span>
-                <span>Date</span>
-              </div>
-            </a>
-            <button>
-              <img src='/images/ellipsis.png' alt='ellipsis' />
-            </button>
-          </SharedActor>
-          <Description>Description</Description>
-          <SharedImg>
-            <a>
-              <img src='/images/shared-image.png' alt='shared' />
-            </a>
-          </SharedImg>
-          <SocialCounts>
-            <li>
-              <button>
-                <img src='/images/like-icon.png' alt='like' />
-                <img src='/images/clap-icon.png' alt='clap' />
-                <span>75</span>
-              </button>
-            </li>
-            <li>
-              <a>2 comments</a>
-            </li>
-          </SocialCounts>
-          <SocialActions>
-            <button>
-              <i className='far fa-thumbs-up'></i>
-              <span>Like</span>
-            </button>
-            <button>
-              <i className='far fa-comment'></i>
-              <span>Comment</span>
-            </button>
-            <button>
-              <i className='fas fa-share'></i>
-              <span>Share</span>
-            </button>
-            <button>
-              <i className='fab fa-telegram-plane'></i>
-              <span>Send</span>
-            </button>
-          </SocialActions>
-        </Article>
-      </div>
+      <Content>
+        {props.loading && <img src='./images/spin-loading.gif' />}
+
+        {props.articles.length != 0 &&
+          props.articles.map((article, key) => (
+            <Article key={key}>
+              <SharedActor>
+                <a>
+                  <img src={article.actor.image} alt='user' />
+                  <div>
+                    <span>{article.actor.title}</span>
+                    <span>{article.actor.description}</span>
+                    <span>
+                      {article.actor.date.toDate().toLocaleDateString()}
+                    </span>
+                  </div>
+                </a>
+                <button>
+                  <img src='/images/ellipsis.png' alt='ellipsis' />
+                </button>
+              </SharedActor>
+              <Description>{article.description}</Description>
+              <SharedImg>
+                <a>
+                  {!article.sharedImg && article.video ? (
+                    <ReactPlayer width={'100%'} url={article.video} />
+                  ) : (
+                    article.sharedImg && <img src={article.sharedImg} />
+                  )}
+                </a>
+              </SharedImg>
+              <SocialCounts>
+                <li>
+                  <button>
+                    <img src='/images/like-icon.png' alt='like' />
+                    <img src='/images/clap-icon.png' alt='clap' />
+                    <span>75</span>
+                  </button>
+                </li>
+                <li>
+                  <a>{article.comments} comments</a>
+                </li>
+              </SocialCounts>
+              <SocialActions>
+                <button>
+                  <i className='far fa-thumbs-up'></i>
+                  <span>Like</span>
+                </button>
+                <button>
+                  <i className='far fa-comment'></i>
+                  <span>Comment</span>
+                </button>
+                <button>
+                  <i className='fas fa-share'></i>
+                  <span>Share</span>
+                </button>
+                <button>
+                  <i className='fab fa-telegram-plane'></i>
+                  <span>Send</span>
+                </button>
+              </SocialActions>
+            </Article>
+          ))}
+      </Content>
 
       <PostModal showModal={showModal} handleClick={handleClick} />
     </Container>
@@ -327,16 +345,23 @@ const SocialActions = styled.div`
   }
 `;
 
+const Content = styled.div`
+  text-align: center;
+  & > img {
+    width: 30px;
+  }
+`;
+
 const mapStateToProps = (state) => {
   return {
-    // loading: state.articleState.loading,
+    loading: state.articleState.loading,
     user: state.userState.user,
-    // articles: state.articleState.articles,
+    articles: state.articleState.articles,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  // getArticles: () => dispatch(getArticlesAPI()),
+  getArticles: () => dispatch(getArticlesAPI()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
