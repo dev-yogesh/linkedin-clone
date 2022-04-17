@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import ReactPlayer from 'react-player';
+import FlipMove from 'react-flip-move';
 import PostModal from './PostModal';
+import ReactPlayer from 'react-player';
 import { getArticlesAPI } from '../actions';
 
 const Main = (props) => {
@@ -70,68 +71,71 @@ const Main = (props) => {
       </ShareBox>
 
       <Content>
-        {props.loading && <img src='./images/spin-loading.gif' />}
+        {props.loading && <img src='./images/spin-loading.gif' alt='loading' />}
 
-        {props.articles.length != 0 &&
-          props.articles.map((article, key) => (
-            <Article key={key}>
-              <SharedActor>
-                <a>
-                  <img src={article.actor.image} alt='user' />
-                  <div>
-                    <span>{article.actor.title}</span>
-                    <span>{article.actor.description}</span>
-                    <span>
-                      {article.actor.date.toDate().toLocaleDateString()}
-                    </span>
-                  </div>
-                </a>
-                <button>
-                  <img src='/images/ellipsis.png' alt='ellipsis' />
-                </button>
-              </SharedActor>
-              <Description>{article.description}</Description>
-              <SharedImg>
-                <a>
-                  {!article.sharedImg && article.video ? (
-                    <ReactPlayer width={'100%'} url={article.video} />
-                  ) : (
-                    article.sharedImg && <img src={article.sharedImg} />
-                  )}
-                </a>
-              </SharedImg>
-              <SocialCounts>
-                <li>
+        <FlipMove>
+          {props.articles.length !== 0 &&
+            props.articles.map((article, key) => (
+              // <ArticleCard key={article.id} article={article} />
+              <Article key={article.id}>
+                <SharedActor>
+                  <a>
+                    <img src={article.actor.image} alt='user' />
+                    <div>
+                      <span>{article.actor.title}</span>
+                      <span>{article.actor.description}</span>
+                      <span>
+                        {article.actor.date.toDate().toLocaleDateString()}
+                      </span>
+                    </div>
+                  </a>
                   <button>
-                    <img src='/images/like-icon.png' alt='like' />
-                    <img src='/images/clap-icon.png' alt='clap' />
-                    <span>75</span>
+                    <img src='/images/ellipsis.png' alt='ellipsis' />
                   </button>
-                </li>
-                <li>
-                  <a>{article.comments} comments</a>
-                </li>
-              </SocialCounts>
-              <SocialActions>
-                <button>
-                  <i className='far fa-thumbs-up'></i>
-                  <span>Like</span>
-                </button>
-                <button>
-                  <i className='far fa-comment'></i>
-                  <span>Comment</span>
-                </button>
-                <button>
-                  <i className='fas fa-share'></i>
-                  <span>Share</span>
-                </button>
-                <button>
-                  <i className='fab fa-telegram-plane'></i>
-                  <span>Send</span>
-                </button>
-              </SocialActions>
-            </Article>
-          ))}
+                </SharedActor>
+                <Description>{article.description}</Description>
+                <SharedImg>
+                  <a>
+                    {!article.sharedImg && article.video ? (
+                      <ReactPlayer width={'100%'} url={article.video} />
+                    ) : (
+                      article.sharedImg && <img src={article.sharedImg} />
+                    )}
+                  </a>
+                </SharedImg>
+                <SocialCounts>
+                  <li>
+                    <button>
+                      <img src='/images/like-icon.png' alt='like' />
+                      <img src='/images/clap-icon.png' alt='clap' />
+                      <span>75</span>
+                    </button>
+                  </li>
+                  <li>
+                    <a>{article.comments} comments</a>
+                  </li>
+                </SocialCounts>
+                <SocialActions>
+                  <button>
+                    <i className='far fa-thumbs-up'></i>
+                    <span>Like</span>
+                  </button>
+                  <button>
+                    <i className='far fa-comment'></i>
+                    <span>Comment</span>
+                  </button>
+                  <button>
+                    <i className='fas fa-share'></i>
+                    <span>Share</span>
+                  </button>
+                  <button>
+                    <i className='fab fa-telegram-plane'></i>
+                    <span>Send</span>
+                  </button>
+                </SocialActions>
+              </Article>
+            ))}
+        </FlipMove>
       </Content>
 
       <PostModal showModal={showModal} handleClick={handleClick} />
@@ -216,6 +220,13 @@ const ShareBox = styled(CommanCard)`
         }
       }
     }
+  }
+`;
+
+const Content = styled.div`
+  text-align: center;
+  & > img {
+    width: 30px;
   }
 `;
 
@@ -342,13 +353,6 @@ const SocialActions = styled.div`
         margin-left: 8px;
       }
     }
-  }
-`;
-
-const Content = styled.div`
-  text-align: center;
-  & > img {
-    width: 30px;
   }
 `;
 
